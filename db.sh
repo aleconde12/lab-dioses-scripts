@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Cambiar hostname
+NEW_HOSTNAME="ciber-db"
+
+hostnamectl set-hostname "$NEW_HOSTNAME"
+
+# Actualizar /etc/hosts
+sed -i "s/^127.0.1.1.*/127.0.1.1\t$NEW_HOSTNAME/" /etc/hosts
+
+echo "Hostname configurado como: $NEW_HOSTNAME"
+
+# Iniciar DB
+
 set -e
 
 LOG_FILE="/var/log/db-init.log"
