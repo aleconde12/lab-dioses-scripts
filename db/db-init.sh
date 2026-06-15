@@ -1,18 +1,26 @@
 #!/bin/bash
 
-# Cambiar hostname
+set -e
+
+# Definir hostname y /etc/hosts
+
+grep -q "# Laboratorio Ciber" /etc/hosts || cat >> /etc/hosts << 'EOF'
+
+# Laboratorio Ciber
+192.168.100.10 ciber-db
+192.168.100.20 ciber-web
+192.168.100.30 ciber-dhcp
+192.168.100.40 ciber-files
+
+EOF
+
 NEW_HOSTNAME="ciber-db"
 
 hostnamectl set-hostname "$NEW_HOSTNAME"
 
-# Actualizar /etc/hosts
-sed -i "s/^127.0.1.1.*/127.0.1.1\t$NEW_HOSTNAME/" /etc/hosts
-
 echo "Hostname configurado como: $NEW_HOSTNAME"
 
 # Iniciar DB
-
-set -e
 
 LOG_FILE="/var/log/db-init.log"
 

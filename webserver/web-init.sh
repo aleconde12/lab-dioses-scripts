@@ -2,17 +2,25 @@
 
 set -e
 
-HOSTNAME_WEB="ciber-web"
-APP_DIR="/var/www/html"
+# Definir hostname y /etc/hosts
 
-echo "Configurando hostname..."
-hostnamectl set-hostname "$HOSTNAME_WEB"
+grep -q "# Laboratorio Ciber" /etc/hosts || cat >> /etc/hosts << 'EOF'
 
-if grep -q "^127.0.1.1" /etc/hosts; then
-    sed -i "s/^127.0.1.1.*/127.0.1.1\t$HOSTNAME_WEB/" /etc/hosts
-else
-    echo "127.0.1.1 $HOSTNAME_WEB" >> /etc/hosts
-fi
+# Laboratorio Ciber
+192.168.100.10 ciber-db
+192.168.100.20 ciber-web
+192.168.100.30 ciber-dhcp
+192.168.100.40 ciber-files
+
+EOF
+
+NEW_HOSTNAME="ciber-web"
+
+hostnamectl set-hostname "$NEW_HOSTNAME"
+
+echo "Hostname configurado como: $NEW_HOSTNAME"
+
+# Instalar paquetes
 
 echo "Actualizando paquetes..."
 apt update
