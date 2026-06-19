@@ -2,6 +2,24 @@
 
 set -e
 
+# Setear IP privada
+
+# Red interna VirtualBox
+INTERNAL_IFACE="enp0s8"
+INTERNAL_IP="192.168.100.10/24"
+
+nmcli connection delete internal-net 2>/dev/null || true
+
+nmcli connection add \
+  type ethernet \
+  ifname "$INTERNAL_IFACE" \
+  con-name internal-net \
+  ipv4.addresses "$INTERNAL_IP" \
+  ipv4.method manual \
+  autoconnect yes
+
+nmcli connection up internal-net
+
 # Definir hostname y /etc/hosts
 
 grep -q "# Laboratorio Ciber" /etc/hosts || cat >> /etc/hosts << 'EOF'
@@ -19,6 +37,8 @@ NEW_HOSTNAME="ciber-db"
 hostnamectl set-hostname "$NEW_HOSTNAME"
 
 echo "Hostname configurado como: $NEW_HOSTNAME"
+
+
 
 # Iniciar DB
 
