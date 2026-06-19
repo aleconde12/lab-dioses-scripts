@@ -4,21 +4,14 @@ set -e
 
 # Setear IP privada
 
-# Red interna VirtualBox
-INTERNAL_IFACE="enp0s8"
-INTERNAL_IP="192.168.100.10/24"
+cat > /etc/network/interfaces.d/internal.conf <<EOF
+auto enp0s8
+iface enp0s8 inet static
+    address 192.168.100.10
+    netmask 255.255.255.0
+EOF
 
-nmcli connection delete internal-net 2>/dev/null || true
-
-nmcli connection add \
-  type ethernet \
-  ifname "$INTERNAL_IFACE" \
-  con-name internal-net \
-  ipv4.addresses "$INTERNAL_IP" \
-  ipv4.method manual \
-  autoconnect yes
-
-nmcli connection up internal-net
+ifup enp0s8
 
 # Definir hostname y /etc/hosts
 
