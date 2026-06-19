@@ -1,6 +1,19 @@
 #!/bin/bash
 set -e
 
+# Setear IP privada
+
+cat > /etc/network/interfaces.d/internal.conf <<EOF
+auto enp0s8
+iface enp0s8 inet static
+    address 192.168.100.40
+    netmask 255.255.255.0
+EOF
+
+ifup enp0s8
+
+# Log file e inicio
+
 LOGFILE="/var/log/ciber-files-init.log"
 
 exec > >(tee -a "$LOGFILE") 2>&1

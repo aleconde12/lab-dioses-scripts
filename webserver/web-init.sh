@@ -2,6 +2,17 @@
 
 set -euo pipefail
 
+# Setear IP privada
+
+cat > /etc/network/interfaces.d/internal.conf <<EOF
+auto enp0s8
+iface enp0s8 inet static
+    address 192.168.100.20
+    netmask 255.255.255.0
+EOF
+
+ifup enp0s8
+
 # ================================
 # Inicialización Webserver - Ciber
 # ================================
