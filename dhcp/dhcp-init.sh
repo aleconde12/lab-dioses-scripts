@@ -67,6 +67,7 @@ subnet 192.168.100.0 netmask 255.255.255.0 {
 EOF
 
 echo "[6/6] Habilitando servicio DHCP..."
+systemctl reset-failed isc-dhcp-server || true
 systemctl enable isc-dhcp-server
 systemctl restart isc-dhcp-server
 
