@@ -128,4 +128,12 @@ FLUSH PRIVILEGES;
 EOF
 
 echo "[OK] MariaDB inicializado correctamente"
+
+# restart para que tome la config de bind 0.0.0.0 
+
+systemctl restart mariadb
+systemctl enable mariadb
+
+echo "servidio mariadb reiniciado"
+
 echo "Fin del script $(date)"
