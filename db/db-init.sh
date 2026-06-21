@@ -31,6 +31,13 @@ hostnamectl set-hostname "$NEW_HOSTNAME"
 
 echo "Hostname configurado como: $NEW_HOSTNAME"
 
+# actualizar /etc/hosts para no dejar changeme
+if grep -q "^127\.0\.1\.1" /etc/hosts; then
+    sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
+else
+    echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
+fi
+
 
 
 # Iniciar DB

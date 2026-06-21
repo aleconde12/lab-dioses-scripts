@@ -19,6 +19,13 @@ INTERNAL_IP="192.168.100.30"
 echo "[1/6] Configurando hostname..."
 hostnamectl set-hostname "$HOSTNAME_VM"
 
+# actualizar /etc/hosts para no dejar changeme
+if grep -q "^127\.0\.1\.1" /etc/hosts; then
+    sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
+else
+    echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
+fi
+
 echo "[2/6] Configurando IP privada en $INTERNAL_IFACE..."
 cat > /etc/network/interfaces.d/internal.conf <<EOF
 auto $INTERNAL_IFACE

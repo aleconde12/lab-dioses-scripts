@@ -32,6 +32,13 @@ SAMBA_DIR="/srv/samba/compartido"
 echo "[INFO] Seteando hostname..."
 hostnamectl set-hostname "$HOSTNAME"
 
+# actualizar /etc/hosts para no dejar changeme
+if grep -q "^127\.0\.1\.1" /etc/hosts; then
+    sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
+else
+    echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
+fi
+
 echo "[INFO] Instalando paquetes..."
 apt update
 apt install -y vsftpd samba smbclient
