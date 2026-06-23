@@ -39,6 +39,20 @@ else
     echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
 fi
 
+# agregar resolucion interna del laboratorio
+if ! grep -q "# Laboratorio Ciber" /etc/hosts; then
+  cat >> /etc/hosts << 'HOSTS_EOF'
+
+# Laboratorio Ciber
+192.168.100.10 ciber-db
+192.168.100.20 ciber-web
+192.168.100.30 ciber-dhcp
+192.168.100.40 ciber-files
+HOSTS_EOF
+else
+  echo "Entradas de Laboratorio Ciber ya existen en /etc/hosts."
+fi
+
 echo "[INFO] Instalando paquetes..."
 apt update
 apt install -y vsftpd samba smbclient
@@ -78,8 +92,10 @@ allow_writeable_chroot=YES
 user_sub_token=\$USER
 local_root=/srv/ftp
 pasv_enable=YES
-pasv_min_port=30000
-pasv_max_port=30100
+pasv_min_port=40000
+pasv_max_port=40100
+pasv_address=192.168.100.40
+
 EOF
 
 echo "[INFO] Configurando Samba..."
