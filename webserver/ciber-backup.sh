@@ -4,6 +4,7 @@ FECHA=$(date +%F)
 SLOT=$(( ($(date +%s) / 86400 % 5) + 1 ))
 
 BACKUP_DIR="/opt/ciber-backups"
+mkdir -p "$BACKUP_DIR"
 WEB_DIR="/var/www/html"
 
 DB_HOST="ciber-db"
