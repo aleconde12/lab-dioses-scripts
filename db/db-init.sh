@@ -15,28 +15,27 @@ ifup enp0s8
 
 # Definir hostname y /etc/hosts
 
-grep -q "# Laboratorio Ciber" /etc/hosts || cat >> /etc/hosts << 'EOF'
+HOSTNAME="ciber-db"
+
+echo "[INFO] Seteando hostname..."
+hostnamectl set-hostname "$HOSTNAME"
+echo "$HOSTNAME" > /etc/hostname
+
+echo "[INFO] Normalizando /etc/hosts..."
+cat > /etc/hosts <<'HOSTS_EOF'
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
 
 # Laboratorio Ciber
 192.168.100.10 ciber-db
 192.168.100.20 ciber-web
 192.168.100.30 ciber-dhcp
 192.168.100.40 ciber-files
-
-EOF
-
-NEW_HOSTNAME="ciber-db"
-
-hostnamectl set-hostname "$NEW_HOSTNAME"
-
-echo "Hostname configurado como: $NEW_HOSTNAME"
-
-# actualizar /etc/hosts para no dejar changeme
-if grep -q "^127\.0\.1\.1" /etc/hosts; then
-    sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
-else
-    echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
-fi
+HOSTS_EOF
 
 
 

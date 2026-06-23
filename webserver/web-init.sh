@@ -20,7 +20,7 @@ ifup enp0s8
 LOG_FILE="/var/log/web-init.log"
 APP_DIR="/var/www/html"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NEW_HOSTNAME="ciber-web"
+HOSTNAME="ciber-web"
 
 # Validar root
 if [[ "${EUID}" -ne 0 ]]; then
@@ -46,8 +46,21 @@ echo ""
 
 echo "[1/9] Configurando hostname y /etc/hosts..."
 
-if ! grep -q "# Laboratorio Ciber" /etc/hosts; then
-  cat >> /etc/hosts << 'HOSTS_EOF'
+# actualizar /etc/hosts para no dejar changeme
+# Definir hostname y /etc/hosts
+
+echo "[INFO] Seteando hostname..."
+hostnamectl set-hostname "$HOSTNAME"
+echo "$HOSTNAME" > /etc/hostname
+
+echo "[INFO] Normalizando /etc/hosts..."
+cat > /etc/hosts <<'HOSTS_EOF'
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
 
 # Laboratorio Ciber
 192.168.100.10 ciber-db
@@ -55,20 +68,6 @@ if ! grep -q "# Laboratorio Ciber" /etc/hosts; then
 192.168.100.30 ciber-dhcp
 192.168.100.40 ciber-files
 HOSTS_EOF
-else
-  echo "Entradas de Laboratorio Ciber ya existen en /etc/hosts."
-fi
-
-hostnamectl set-hostname "$NEW_HOSTNAME"
-echo "Hostname configurado como: $NEW_HOSTNAME"
-echo ""
-
-# actualizar /etc/hosts para no dejar changeme
-if grep -q "^127\.0\.1\.1" /etc/hosts; then
-    sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
-else
-    echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
-fi
 
 # 2. Paquetes
 

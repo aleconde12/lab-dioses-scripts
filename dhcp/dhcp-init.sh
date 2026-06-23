@@ -12,19 +12,35 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-HOSTNAME_VM="ciber-dhcp"
+HOSTNAME="ciber-dhcp"
 INTERNAL_IFACE="enp0s8"
 INTERNAL_IP="192.168.100.30"
 
 echo "[1/6] Configurando hostname..."
-hostnamectl set-hostname "$HOSTNAME_VM"
+hostnamectl set-hostname "$HOSTNAME"
 
 # actualizar /etc/hosts para no dejar changeme
-if grep -q "^127\.0\.1\.1" /etc/hosts; then
-    sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
-else
-    echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
-fi
+# Definir hostname y /etc/hosts
+
+echo "[INFO] Seteando hostname..."
+hostnamectl set-hostname "$HOSTNAME"
+echo "$HOSTNAME" > /etc/hostname
+
+echo "[INFO] Normalizando /etc/hosts..."
+cat > /etc/hosts <<'HOSTS_EOF'
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+# Laboratorio Ciber
+192.168.100.10 ciber-db
+192.168.100.20 ciber-web
+192.168.100.30 ciber-dhcp
+192.168.100.40 ciber-files
+HOSTS_EOF
 
 echo "[2/6] Configurando IP privada en $INTERNAL_IFACE..."
 cat > /etc/network/interfaces.d/internal.conf <<EOF
@@ -37,16 +53,7 @@ EOF
 ifdown "$INTERNAL_IFACE" 2>/dev/null || true
 ifup "$INTERNAL_IFACE"
 
-echo "[3/6] Configurando /etc/hosts..."
-cat > /etc/hosts <<EOF
-127.0.0.1 localhost
-127.0.1.1 $HOSTNAME_VM
-
-192.168.100.10 ciber-db
-192.168.100.20 ciber-web
-192.168.100.30 ciber-dhcp
-192.168.100.40 ciber-files
-EOF
+# instalar DHCP
 
 echo "[4/6] Instalando servidor DHCP..."
 apt update

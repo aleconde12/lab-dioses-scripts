@@ -33,15 +33,20 @@ echo "[INFO] Seteando hostname..."
 hostnamectl set-hostname "$HOSTNAME"
 
 # actualizar /etc/hosts para no dejar changeme
-if grep -q "^127\.0\.1\.1" /etc/hosts; then
-    sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $HOSTNAME/" /etc/hosts
-else
-    echo "127.0.1.1 $HOSTNAME" >> /etc/hosts
-fi
+# Definir hostname y /etc/hosts
 
-# agregar resolucion interna del laboratorio
-if ! grep -q "# Laboratorio Ciber" /etc/hosts; then
-  cat >> /etc/hosts << 'HOSTS_EOF'
+echo "[INFO] Seteando hostname..."
+hostnamectl set-hostname "$HOSTNAME"
+echo "$HOSTNAME" > /etc/hostname
+
+echo "[INFO] Normalizando /etc/hosts..."
+cat > /etc/hosts <<'HOSTS_EOF'
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
 
 # Laboratorio Ciber
 192.168.100.10 ciber-db
@@ -49,9 +54,8 @@ if ! grep -q "# Laboratorio Ciber" /etc/hosts; then
 192.168.100.30 ciber-dhcp
 192.168.100.40 ciber-files
 HOSTS_EOF
-else
-  echo "Entradas de Laboratorio Ciber ya existen en /etc/hosts."
-fi
+
+# Paquetes files
 
 echo "[INFO] Instalando paquetes..."
 apt update
