@@ -121,6 +121,34 @@ echo "Samba: \\\\192.168.100.40\\compartido"
 echo "Usuario: $USER_FILE"
 echo "Password: $PASS_FILE"
 
+# Configurar firewall
+ufw --force reset
+
+ufw default deny incoming
+ufw default allow outgoing
+
+# SSH administrativo
+ufw allow from 192.168.100.0/24 to any port 22035 proto tcp
+
+# FTP para backups desde web y db
+ufw allow from 192.168.100.20 to any port 21 proto tcp
+ufw allow from 192.168.100.10 to any port 21 proto tcp
+
+# Samba para acceso desde Windows/red interna
+ufw allow from 192.168.100.0/24 to any port 445 proto tcp
+ufw allow from 192.168.100.0/24 to any port 139 proto tcp
+ufw allow from 192.168.100.0/24 to any port 137 proto udp
+ufw allow from 192.168.100.0/24 to any port 138 proto udp
+
+# Rango para permitir ftp pasivo
+sudo ufw allow from 192.168.100.20 to any port 40000:40100 proto tcp
+sudo ufw allow from 192.168.100.10 to any port 40000:40100 proto tcp
+
+ufw --force enable
+
+echo "[+] Estado UFW:"
+ufw status verbose
+
 echo "========================================="
 echo "Fin: $(date)"
 echo "========================================="

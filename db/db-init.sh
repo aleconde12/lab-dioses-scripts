@@ -143,4 +143,22 @@ systemctl enable mariadb
 
 echo "servidio mariadb reiniciado"
 
+# Configurar firewall
+echo "[+] Configurando firewall UFW para ciber-db..."
+ufw --force reset
+
+ufw default deny incoming
+ufw default allow outgoing
+
+# SSH administrativo
+ufw allow from 192.168.100.0/24 to any port 22035 proto tcp
+
+# MariaDB solo desde el webserver
+ufw allow from 192.168.100.20 to any port 3306 proto tcp
+
+ufw --force enable
+
+echo "[+] Estado UFW:"
+ufw status verbose
+
 echo "Fin del script $(date)"

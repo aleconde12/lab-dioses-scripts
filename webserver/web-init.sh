@@ -151,6 +151,24 @@ else
   echo "[WARN] No se pudo conectar a ciber-db:3306. Verificar que la VM DB esté encendida, IP 192.168.100.10, MariaDB y bind-address/permisos."
 fi
 
+# Administrar puertos con UFW
+
+ufw --force reset
+
+ufw default deny incoming
+ufw default allow outgoing
+
+# SSH administrativo
+ufw allow from 192.168.100.0/24 to any port 22035 proto tcp
+
+# Acceso web
+ufw allow from 192.168.100.0/24 to any port 80 proto tcp
+
+ufw --force enable
+
+echo "[+] Estado UFW:"
+ufw status verbose
+
 echo ""
 echo "========================================"
 echo "Inicialización WEB finalizada $(date)"

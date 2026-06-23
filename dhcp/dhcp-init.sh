@@ -84,5 +84,25 @@ systemctl status isc-dhcp-server --no-pager || true
 echo "===== IP EN $INTERNAL_IFACE ====="
 ip a show "$INTERNAL_IFACE"
 
+# Configurar firewall
+echo "[+] Configurando firewall UFW para ciber-dhcp..."
+
+ufw --force reset
+
+ufw default deny incoming
+ufw default allow outgoing
+
+# SSH administrativo
+ufw allow from 192.168.100.0/24 to any port 22035 proto tcp
+
+# DHCP
+ufw allow 67/udp
+ufw allow 68/udp
+
+ufw --force enable
+
+echo "[+] Estado UFW:"
+ufw status verbose
+
 echo "===== FIN INIT DHCP ====="
 date
