@@ -31,8 +31,7 @@ tar -czf "$FULL_BACKUP" "$WEB_BACKUP" "$DB_BACKUP"
 
 ftp -inv "$FTP_HOST" <<EOF
 user $FTP_USER $FTP_PASS
-mkdir $FTP_DIR
 cd $FTP_DIR
-put $FULL_BACKUP
+put "$FULL_BACKUP" "$(basename "$FULL_BACKUP")"
 bye
 EOF
