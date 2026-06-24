@@ -24,7 +24,7 @@ echo "========================================="
 
 HOSTNAME="ciber-files"
 USER_FILE="ciberfiles"
-PASS_FILE="Ciber1234"
+PASS_FILE="ciber123"
 
 FTP_DIR="/srv/ftp/backups"
 SAMBA_DIR="/srv/samba/compartido"
@@ -117,7 +117,10 @@ cat > /etc/samba/smb.conf <<EOF
    path = /srv/samba/compartido
    browsable = yes
    writable = yes
+   read only = no
+   guest ok = no
    valid users = $USER_FILE
+   force user = $USER_FILE
    create mask = 0664
    directory mask = 0775
 EOF

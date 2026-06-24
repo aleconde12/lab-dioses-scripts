@@ -140,7 +140,7 @@ echo "[OK] MariaDB inicializado correctamente"
 systemctl restart mariadb
 systemctl enable mariadb
 
-echo "servidio mariadb reiniciado"
+echo "servicio mariadb reiniciado"
 
 # Configurar firewall
 echo "[+] Configurando firewall UFW para ciber-db..."
